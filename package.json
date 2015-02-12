@@ -1,0 +1,42 @@
+{
+  "name": "hubot-github-deployments",
+  "description": "Integrate with GitHub deployment API",
+  "version": "1.0.0",
+  "author": "stephenyeargin",
+  "license": "MIT",
+
+  "keywords": [
+    "hubot",
+    "hubot-scripts",
+    "github",
+    "deployment",
+    "deployment api"
+  ],
+
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/stephenyeargin/hubot-github-deployments.git"
+  },
+
+  "bugs": {
+    "url": "https://github.com/stephenyeargin/hubot-github-deployments/issues"
+  },
+
+  "dependencies": {
+    "coffee-script": "~1.6",
+    "githubot": "1.0.0-beta2"
+  },
+
+  "devDependencies": {
+    "mocha": "2.1.0",
+    "chai": "1.9.2",
+    "sinon-chai": "2.6.0",
+    "sinon": "1.12.2"
+  },
+
+  "main": "index.coffee",
+
+  "scripts": {
+    "test": "script/test"
+  }
+}
