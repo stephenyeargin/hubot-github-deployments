@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Hubot GitHub Deployments : Integrate with GitHub deployment API">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Hubot GitHub Deployments</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/stephenyeargin/hubot-github-deployments">View on GitHub</a>
+
+          <h1 id="project_title">Hubot GitHub Deployments</h1>
+          <h2 id="project_tagline">Integrate with GitHub deployment API</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/stephenyeargin/hubot-github-deployments/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/stephenyeargin/hubot-github-deployments/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h2>
+<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting Started</h2>
+
+<p>This module allows you to create payloads to send to the <a href="https://developer.github.com/v3/repos/deployments/">GitHub Deployment API</a>, then check on the status of the deployments. Combined with a deployment tool that listens to organizational or repository <a href="https://developer.github.com/v3/activity/events/types/#deploymentevent">DeploymentEvent</a> webhooks, this module can help automate that process via ChatOps.</p>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>In your hubot repository, run:</p>
+
+<p><code>npm install hubot-github-deployments --save</code></p>
+
+<p>Then add <strong>hubot-github-deployments</strong> to your <code>external-scripts.json</code>:</p>
+
+<div class="highlight highlight-json"><pre>[<span class="pl-s1"><span class="pl-pds">"</span>hubot-github-deployments<span class="pl-pds">"</span></span>]</pre></div>
+
+<h2>
+<a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration:</h2>
+
+<h3>
+<a id="heroku" class="anchor" href="#heroku" aria-hidden="true"><span class="octicon octicon-link"></span></a>Heroku</h3>
+
+<pre><code>heroku config:set HUBOT_GITHUB_TOKEN=&lt;User Application Token&gt;
+heroku config:set HUBOT_GITHUB_USER=&lt;User for Deployments&gt;
+heroku config:set HUBOT_GITHUB_DEPLOY_TARGETS=&lt;Comma Seperated List of Environments&gt;
+heroku config:set HUBOT_GITHUB_REPO=&lt;Repository to deploy, in :user_or_org/:repository format&gt;
+</code></pre>
+
+<h3>
+<a id="standard" class="anchor" href="#standard" aria-hidden="true"><span class="octicon octicon-link"></span></a>Standard</h3>
+
+<pre><code>export HUBOT_GITHUB_TOKEN=&lt;User Application Token&gt;
+export HUBOT_GITHUB_USER=&lt;User for Deployments&gt;
+export HUBOT_GITHUB_DEPLOY_TARGETS=&lt;Comma Seperated List of Environments&gt;
+export HUBOT_GITHUB_REPO=&lt;Repository to deploy, in :user_or_org/:repository format&gt;
+</code></pre>
+
+<h2>
+<a id="commands" class="anchor" href="#commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>Commands:</h2>
+
+<ul>
+<li>
+<code>hubot deploy status</code> - List the status of most recent deployments</li>
+<li>
+<code>hubot deploy status &lt;id&gt;</code> - List the statuses a particular deployment</li>
+<li>
+<code>hubot deploy list targets</code> - List available deployment targets</li>
+<li>
+<code>hubot deploy list branches &lt;search&gt;</code> - List available branches, filtered by optional search term</li>
+<li>
+<code>hubot deploy &lt;branch or SHA&gt; to &lt;server&gt;</code> - Creates a Github deployment of a branch/SHA to a server</li>
+</ul>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Hubot GitHub Deployments maintained by <a href="https://github.com/stephenyeargin">stephenyeargin</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
