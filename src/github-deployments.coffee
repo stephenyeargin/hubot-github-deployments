@@ -47,7 +47,7 @@ module.exports = (robot) ->
         else
           for status in statuses
             do (status) ->
-              msg.send "#{status.description} (#{status.state}) at #{status.created_at}"
+              msg.send "Status: #{status.description} (#{status.created_at}) / State: #{status.state}"
     else
       github.deployments app, (deployments) ->
 
@@ -56,8 +56,7 @@ module.exports = (robot) ->
         else
           for deployment in deployments
             do (deployment) ->
-              payload = deployment.payload
-              msg.send "#{deployment.id}: #{payload.deploy_user} deployed #{payload.ref} to #{payload.environment} at #{deployment.created_at}"
+              msg.send "Deployment #{deployment.id} (#{deployment.created_at}): User: #{deployment.creator.login} / Action: #{deployment.task} / Ref: #{deployment.ref} / Environment: #{deployment.environment} / Description: (#{deployment.description})"
 
 
   # List Deployment Targets
@@ -69,7 +68,7 @@ module.exports = (robot) ->
       msg.send "No deployment targets defined. Set HUBOT_GITHUB_DEPLOYMENT_TARGETS first."
     else
       msg.send "Available Deployment Targets"
-      msg.send "  #{target}" for target in deployTargets
+      msg.send "- #{target}" for target in deployTargets
 
   # List Available Branches
   robot.respond /deploy list branches(.*)$/i, (msg) ->
@@ -92,10 +91,14 @@ module.exports = (robot) ->
             if filter
               branch_name = branch.name
               if ~branch_name.indexOf filter
-                msg.send "  #{branch.name}: #{branch.commit.sha}"
+                branch_count++
+                msg.send "- #{branch.name}: #{branch.commit.sha}"
             # Unfiltered list
             else
-              msg.send "  #{branch.name}: #{branch.commit.sha}"
+              branch_count++
+              msg.send "- #{branch.name}: #{branch.commit.sha}"
+        if filter && branch_count == 0
+          msg.send "- None matched search criteria."
 
   # Create Deployment
   robot.respond /deploy ([-_\.0-9a-zA-Z\/]+)? to ([-_\.0-9a-zA-Z\/]+)$/i, (msg) ->
@@ -111,12 +114,15 @@ module.exports = (robot) ->
       room = msg.message.user.room.toLowerCase()
 
       options = {
-        payload: {env: target, deploy_user: username, room: room, ref: ref}
+        ref: ref,
+        task: 'deploy',
+        environment: target,
+        payload: {user: username, room: room}
         description: "#{username} deployed #{ref} to #{target}"
       }
 
-      github.deployments(app).create ref, options, (response) ->
-        msg.send response.description
+      github.deployments(app).create ref, options, (deployment) ->
+        msg.send deployment.description
     else
       msg.send "\"#{target}\" not in available deploy targets. Use `deploy list targets`"
 
