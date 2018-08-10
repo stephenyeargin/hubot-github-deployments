@@ -1,7 +1,7 @@
 {
   "name": "hubot-github-deployments",
   "description": "Integrate with GitHub deployment API",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "Stephen Yeargin <stephen@yearg.in>",
   "homepage": "https://github.com/stephenyeargin/hubot-github-deployments",
   "license": "MIT",
