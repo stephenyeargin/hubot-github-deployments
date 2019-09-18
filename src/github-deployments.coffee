@@ -150,7 +150,7 @@ module.exports = (robot) ->
         task: 'deploy',
         environment: target,
         payload: {user: username, room: room}
-        description: "#{username} deployedzzz #{ref} to #{target}"
+        description: "#{username} deployed #{ref} to #{target}"
       }
 
       github.deployments(app).create ref, options, (deployment) ->
