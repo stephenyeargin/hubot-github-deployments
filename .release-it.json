@@ -1,5 +1,7 @@
 {
-  "pkgFiles": ["package.json", "package-lock.json"],
+  "git": {
+    "tagName": "v${version}"
+  },
   "github": {
     "release": true
   }
