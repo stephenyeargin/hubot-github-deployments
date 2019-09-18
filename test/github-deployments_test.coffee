@@ -44,6 +44,25 @@ describe 'hubot-github-deployments', ->
       return
     , 1000)
 
+  it 'responds with the list of recent deployments for a specific repo', (done) ->
+    nock('https://api.github.com')
+      .get('/repos/someone/somewhere/deployments')
+      .replyWithFile(200, __dirname + '/fixtures/deployments.json')
+
+    selfRoom = @room
+    selfRoom.user.say('alice', '@hubot deploy status for someone/somewhere')
+    setTimeout(() ->
+      try
+        expect(selfRoom.messages).to.eql [
+          ['alice', '@hubot deploy status for someone/somewhere']
+          ['hubot', 'Deployment 1 (2012-07-20T01:19:13Z): User: octocat / Action: deploy / Ref: master / Environment: production / Description: (Deploy request from hubot)']
+        ]
+        done()
+      catch err
+        done err
+      return
+    , 1000)
+
   it 'gets the status of a single deployment', (done) ->
     nock('https://api.github.com')
       .get('/repos/stephenyeargin/hubot-github-deployments/deployments/1/statuses')
@@ -63,6 +82,26 @@ describe 'hubot-github-deployments', ->
       return
     , 1000)
 
+
+  it 'gets the status of a single deployment for a specific repo', (done) ->
+    nock('https://api.github.com')
+      .get('/repos/someone/somewhere/deployments/1/statuses')
+      .replyWithFile(200, __dirname + '/fixtures/deployments-1-statuses.json')
+
+    selfRoom = @room
+    selfRoom.user.say('alice', '@hubot deploy status 1 for someone/somewhere')
+    setTimeout(() ->
+      try
+        expect(selfRoom.messages).to.eql [
+          ['alice', '@hubot deploy status 1 for someone/somewhere']
+          ['hubot', 'Status: Deployment finished successfully. (2012-07-20T01:19:13Z) / State: success']
+        ]
+        done()
+      catch err
+        done err
+      return
+    , 1000)
+
   it 'creates a deployment', (done) ->
     nock('https://api.github.com')
       .post('/repos/stephenyeargin/hubot-github-deployments/deployments')
@@ -74,6 +113,25 @@ describe 'hubot-github-deployments', ->
       try
         expect(selfRoom.messages).to.eql [
           ['alice', '@hubot deploy master to production']
+          ['hubot', 'stephenyeargin deployed master to production']
+        ]
+        done()
+      catch err
+        done err
+      return
+    , 1000)
+
+  it 'creates a deployment for a specific repo', (done) ->
+    nock('https://api.github.com')
+      .post('/repos/someone/somewhere/deployments')
+      .replyWithFile(200, __dirname + '/fixtures/deployments-create.json')
+
+    selfRoom = @room
+    selfRoom.user.say('alice', '@hubot deploy master to production for someone/somewhere')
+    setTimeout(() ->
+      try
+        expect(selfRoom.messages).to.eql [
+          ['alice', '@hubot deploy master to production for someone/somewhere']
           ['hubot', 'stephenyeargin deployed master to production']
         ]
         done()
@@ -119,6 +177,27 @@ describe 'hubot-github-deployments', ->
       return
     , 1000)
 
+  it 'lists all branches for a specific repo', (done) ->
+    nock('https://api.github.com')
+      .get('/repos/someone/somewhere/branches')
+      .replyWithFile(200, __dirname + '/fixtures/repos-branches.json')
+
+    selfRoom = @room
+    selfRoom.user.say('alice', '@hubot deploy list branches for someone/somewhere')
+    setTimeout(() ->
+      try
+        expect(selfRoom.messages).to.eql [
+          ['alice', '@hubot deploy list branches for someone/somewhere']
+          ['hubot', 'Available Deployment Branches']
+          ['hubot', '- master: 6dcb09b5b57875f334f61aebed695e2e4193db5e']
+        ]
+        done()
+      catch err
+        done err
+      return
+    , 1000)
+
+
   it 'lists branches matching search', (done) ->
     nock('https://api.github.com')
       .get('/repos/stephenyeargin/hubot-github-deployments/branches')
@@ -139,6 +218,26 @@ describe 'hubot-github-deployments', ->
       return
     , 1000)
 
+  it 'lists branches matching search for a specific repo', (done) ->
+    nock('https://api.github.com')
+      .get('/repos/someone/somewhere/branches')
+      .replyWithFile(200, __dirname + '/fixtures/repos-branches.json')
+
+    selfRoom = @room
+    selfRoom.user.say('alice', '@hubot deploy list branches for someone/somewhere mast')
+    setTimeout(() ->
+      try
+        expect(selfRoom.messages).to.eql [
+          ['alice', '@hubot deploy list branches for someone/somewhere mast']
+          ['hubot', 'Available Deployment Branches']
+          ['hubot', '- master: 6dcb09b5b57875f334f61aebed695e2e4193db5e']
+        ]
+        done()
+      catch err
+        done err
+      return
+    , 1000)
+
   it 'lists branches matching search, no results', (done) ->
     nock('https://api.github.com')
       .get('/repos/stephenyeargin/hubot-github-deployments/branches')
@@ -150,6 +249,26 @@ describe 'hubot-github-deployments', ->
       try
         expect(selfRoom.messages).to.eql [
           ['alice', '@hubot deploy list branches foo']
+          ['hubot', 'Available Deployment Branches']
+          ['hubot', '- None matched search criteria.']
+        ]
+        done()
+      catch err
+        done err
+      return
+    , 1000)
+
+  it 'lists branches matching search for a specific repo, no results', (done) ->
+    nock('https://api.github.com')
+      .get('/repos/someone/somewhere/branches')
+      .replyWithFile(200, __dirname + '/fixtures/repos-branches.json')
+
+    selfRoom = @room
+    selfRoom.user.say('alice', '@hubot deploy list branches for someone/somewhere foo')
+    setTimeout(() ->
+      try
+        expect(selfRoom.messages).to.eql [
+          ['alice', '@hubot deploy list branches for someone/somewhere foo']
           ['hubot', 'Available Deployment Branches']
           ['hubot', '- None matched search criteria.']
         ]

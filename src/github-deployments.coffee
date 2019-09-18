@@ -12,14 +12,15 @@
 #   HUBOT_GITHUB_REPO - GitHub repository to use for deployments
 #
 # Commands:
-#   hubot deploy status - List the status of most recent deployments
-#   hubot deploy status <id> - List the statuses a particular deployment
+#   hubot deploy status [for :owner/:repo] - List the status of most recent deployments
+#   hubot deploy status [id] [for :owner/:repo]  - List the statuses a particular deployment, or an optional specific status
 #   hubot deploy list targets - List available deployment targets
-#   hubot deploy list branches <search> - List available branches, filtered by optional search term
-#   hubot deploy <branch or SHA> to <server> - Creates a Github deployment of a branch/SHA to a server
+#   hubot deploy list branches [for :owner/:repo] [search] - List available branches, filtered by optional search term
+#   hubot deploy <branch or SHA> to <server> [for :owner/:repo]  - Creates a Github deployment of a branch/SHA to a server
 #
 # Notes:
 #   HUBOT_GITHUB_DEPLOYMENT_TARGETS defines what is sent along with the payload for your third-party tool
+#   If HUBOT_GITHUB_REPO is not provided, you'll need to include the `for :owner/:repo` syntax
 #
 # Author:
 #   stephenyeargin
@@ -32,12 +33,22 @@ module.exports = (robot) ->
     deployTargets = []
 
   # Status
-  robot.respond /deploy status( [0-9]+)?$/i, (msg) ->
+  robot.respond /deploy status( [0-9]+)?(?: for ([\-A-z0-9]+)\/([\-A-z0-9]+))?$/i, (msg) ->
     unless checkConfiguration(msg)
       return;
 
     app = process.env.HUBOT_GITHUB_REPO
     status_id = msg.match[1]
+
+    owner = msg.match[2]
+    repo = msg.match[3]
+
+    if !owner? && !repo?
+      if !app?
+        msg.send "Missing configuration: HUBOT_GITHUB_REPO"
+        return false
+    else
+      app = "#{owner}/#{repo}"
 
     if status_id?
       status_id = status_id.trim()
@@ -71,13 +82,24 @@ module.exports = (robot) ->
       msg.send "- #{target}" for target in deployTargets
 
   # List Available Branches
-  robot.respond /deploy list branches(.*)$/i, (msg) ->
+  robot.respond /deploy list branches(?: for ([\-A-z0-9]+)\/([\-A-z0-9]+))?(.*)$/i, (msg) ->
     unless checkConfiguration(msg)
       return;
 
-    filter = msg.match[1].toLowerCase().trim()
 
     app = process.env.HUBOT_GITHUB_REPO
+    owner = msg.match[1]
+    repo = msg.match[2]
+
+    if !owner? && !repo?
+      if !app?
+        msg.send "Missing configuration: HUBOT_GITHUB_REPO"
+        return false
+    else
+      app = "#{owner}/#{repo}"
+
+    filter = msg.match[3].toLowerCase().trim()
+
     github.branches app, (branches) ->
 
       if branches.length is 0
@@ -101,7 +123,7 @@ module.exports = (robot) ->
           msg.send "- None matched search criteria."
 
   # Create Deployment
-  robot.respond /deploy ([-_\.0-9a-zA-Z\/]+)? to ([-_\.0-9a-zA-Z\/]+)$/i, (msg) ->
+  robot.respond /deploy ([-_\.0-9a-zA-Z\/]+)? to ([-_\.0-9a-zA-Z\/]+)(?: for ([\-A-z0-9]+)\/([\-A-z0-9]+))?$/i, (msg) ->
     unless checkConfiguration(msg)
       return;
 
@@ -113,12 +135,22 @@ module.exports = (robot) ->
       username = msg.message.user.name.toLowerCase()
       room = msg.message.user.room.toLowerCase()
 
+      owner = msg.match[3]
+      repo = msg.match[4]
+
+      if !owner? && !repo?
+        if !app?
+          msg.send "Missing configuration: HUBOT_GITHUB_REPO"
+          return false
+      else
+        app = "#{owner}/#{repo}"
+
       options = {
         ref: ref,
         task: 'deploy',
         environment: target,
         payload: {user: username, room: room}
-        description: "#{username} deployed #{ref} to #{target}"
+        description: "#{username} deployedzzz #{ref} to #{target}"
       }
 
       github.deployments(app).create ref, options, (deployment) ->
@@ -149,9 +181,6 @@ module.exports = (robot) ->
       return false
     unless process.env.HUBOT_GITHUB_DEPLOY_TARGETS
       msg.send "Missing configuration: HUBOT_GITHUB_DEPLOY_TARGETS"
-      return false
-    unless process.env.HUBOT_GITHUB_REPO
-      msg.send "Missing configuration: HUBOT_GITHUB_REPO"
       return false
 
     return true;
