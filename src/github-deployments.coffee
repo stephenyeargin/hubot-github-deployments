@@ -12,11 +12,11 @@
 #   HUBOT_GITHUB_REPO - GitHub repository to use for deployments
 #
 # Commands:
-#   hubot deploy status (for owner/repo) - List the status of most recent deployments
-#   hubot deploy status <id> (for owner/repo)  - List the statuses a particular deployment
+#   hubot deploy status [for :owner/:repo] - List the status of most recent deployments
+#   hubot deploy status [id] [for :owner/:repo]  - List the statuses a particular deployment, or an optional specific status
 #   hubot deploy list targets - List available deployment targets
-#   hubot deploy list branches (for owner/repo) <search> - List available branches, filtered by optional search term
-#   hubot deploy <branch or SHA> to <server> (for owner/repo)  - Creates a Github deployment of a branch/SHA to a server
+#   hubot deploy list branches [for :owner/:repo] [search] - List available branches, filtered by optional search term
+#   hubot deploy <branch or SHA> to <server> [for :owner/:repo]  - Creates a Github deployment of a branch/SHA to a server
 #
 # Notes:
 #   HUBOT_GITHUB_DEPLOYMENT_TARGETS defines what is sent along with the payload for your third-party tool
