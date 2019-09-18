@@ -29,12 +29,12 @@ Then add **hubot-github-deployments** to your `external-scripts.json`:
 | `HUBOT_GITHUB_TOKEN`          | Yes       | GitHub application token         |
 | `HUBOT_GITHUB_USER`           | Yes       | GitHub bot user for deployments (IRC user will be noted in deployment description) |
 | `HUBOT_GITHUB_DEPLOY_TARGETS` | Yes       | Comma-separated list of environments, e.g. `production,staging` |
-| `HUBOT_GITHUB_REPO`           | Yes       | Repository to deploy, in `:user_or_org/:repository format` |
+| `HUBOT_GITHUB_REPO`           | No       | Repository to deploy, in `:user_or_org/:repository format` |
 
 ## Commands:
 
-- `hubot deploy status` - List the status of most recent deployments
-- `hubot deploy status <id>` - List the statuses a particular deployment
-- `hubot deploy list targets` - List available deployment targets
-- `hubot deploy list branches <search>` - List available branches, filtered by optional search term
-- `hubot deploy <branch or SHA> to <server>` - Creates a Github deployment of a branch/SHA to a server
+- `hubot deploy status (for owner/repo)` - List the status of most recent deployments
+- `hubot deploy status <id> (for owner/repo)` - List the statuses a particular deployment
+- `hubot deploy list targets (for owner/repo)` - List available deployment targets
+- `hubot deploy list branches (for owner/repo) <search>` - List available branches, filtered by optional search term
+- `hubot deploy <branch or SHA> to <server> (for owner/repo)` - Creates a Github deployment of a branch/SHA to a server
