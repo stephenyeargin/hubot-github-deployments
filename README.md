@@ -8,8 +8,6 @@ Integrate with GitHub deployment API.
 
 This package allows you to create payloads to send to the [GitHub Deployment API](https://developer.github.com/v3/repos/deployments/), then check on the status of the deployments. Combined with a deployment tool that listens to organizational or repository [DeploymentEvent](https://developer.github.com/v3/activity/events/types/#deploymentevent) webhooks, this module can help automate that process via ChatOps.
 
-Note: This package is configured for use with a single repository to a static list of environments.
-
 ## Installation
 
 In your hubot repository, run:
