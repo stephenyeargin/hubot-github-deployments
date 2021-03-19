@@ -11,6 +11,7 @@
 #   HUBOT_GITHUB_REPO - GitHub repository to use for deployments
 #   HUBOT_GITHUB_DEPLOY_TARGETS - comma separated keys for your deployment environments.
 #   HUBOT_GITHUB_DEPLOY_AUTO_MERGE - (optional) Instructs GitHub to attempt to automatically merge the default branch into the requested ref.
+#   HUBOT_GITHUB_DEPLOY_ALLOWED_CHANNELS - (optional) Specifies list of comma separated channel names where deployment invocations are allowed.
 #
 # Commands:
 #   hubot deploy status [for :owner/:repo] - List the status of most recent deployments
@@ -27,6 +28,19 @@
 #   stephenyeargin
 
 module.exports = (robot) ->
+  channelFilterSupport = () ->
+    if robot.adapter.client.channels?
+      return 'mattermost'
+    false
+
+  channelName = (room) ->
+    if not channelFilterSupport()
+      return null
+    
+    if channelFilterSupport() == 'mattermost'
+      channel = robot.adapter.client.channels[room]
+      return (channel.name if channel) || room
+
   github = require('githubot')(robot, apiVersion: 'cannonball-preview')
   if (process.env.HUBOT_GITHUB_DEPLOY_TARGETS)
     deployTargets = process.env.HUBOT_GITHUB_DEPLOY_TARGETS.split(",")
@@ -128,10 +142,20 @@ module.exports = (robot) ->
     unless checkConfiguration(res)
       return;
 
+    allowed_channels = []
     app = process.env.HUBOT_GITHUB_REPO
     auto_merge = process.env.HUBOT_GITHUB_DEPLOY_AUTO_MERGE
+    allowed_channels = process.env.HUBOT_GITHUB_DEPLOY_ALLOWED_CHANNELS.split(",") if process.env.HUBOT_GITHUB_DEPLOY_ALLOWED_CHANNELS
+
     ref = res.match[1]
     target = res.match[2]
+    username = res.message.user.name.toLowerCase()
+    room = res.envelope.room
+    channel_name = channelName(room)
+
+    if channel_name and allowed_channels.length > 0 and channel_name not in allowed_channels
+      res.send "Deployment invocations are not allowed from this channel!"
+      return false
 
     if target in deployTargets
       username = res.message.user.name.toLowerCase()

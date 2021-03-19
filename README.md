@@ -28,7 +28,13 @@ Then add **hubot-github-deployments** to your `external-scripts.json`:
 | `HUBOT_GITHUB_USER`           | Yes       | GitHub bot user for deployments (IRC user will be noted in deployment description) |
 | `HUBOT_GITHUB_DEPLOY_TARGETS` | Yes       | Comma-separated list of environments, e.g. `production,staging` |
 | `HUBOT_GITHUB_DEPLOY_AUTO_MERGE` | No       | Passes auto_merge parameter to the deployment `true/false` |
+| `HUBOT_GITHUB_DEPLOY_ALLOWED_CHANNELS` | No       |  Specifies list of comma separated channel names where deployment invocations are allowed |
 | `HUBOT_GITHUB_REPO`           | No        | Repository to deploy, in `:owner/:repository format` |
+
+## Compatibility
+
+`HUBOT_GITHUB_DEPLOY_ALLOWED_CHANNELS` is available for the following adapters:
+  - MatterMost
 
 ## Commands:
 
