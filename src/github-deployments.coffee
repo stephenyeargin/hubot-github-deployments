@@ -10,6 +10,7 @@
 #   HUBOT_GITHUB_USER - Default GitHub username to use if one is not given.
 #   HUBOT_GITHUB_DEPLOY_TARGETS - comma separated keys for your deployment environments.
 #   HUBOT_GITHUB_REPO - GitHub repository to use for deployments
+#   HUBOT_GITHUB_DEPLOY_AUTO_MERGE - (optional) Instructs GitHub to attempt to automatically merge the default branch into the requested ref.
 #
 # Commands:
 #   hubot deploy status [for :owner/:repo] - List the status of most recent deployments
@@ -128,6 +129,7 @@ module.exports = (robot) ->
       return;
 
     app = process.env.HUBOT_GITHUB_REPO
+    auto_merge = process.env.HUBOT_GITHUB_DEPLOY_AUTO_MERGE
     ref = msg.match[1]
     target = msg.match[2]
 
@@ -145,15 +147,17 @@ module.exports = (robot) ->
       else
         app = "#{owner}/#{repo}"
 
-      options = {
+      data = {
         ref: ref,
         task: 'deploy',
         environment: target,
         payload: {user: username, room: room}
-        description: "#{username} deployed #{ref} to #{target}"
+        description: "#{username} created deployment for #{app}@#{ref} to #{target}"
       }
 
-      github.deployments(app).create ref, options, (deployment) ->
+      data['auto_merge'] = auto_merge == 'true' if auto_merge
+
+      github.deployments(app).create ref, data, (deployment) ->
         msg.send deployment.description
     else
       msg.send "\"#{target}\" not in available deploy targets. Use `deploy list targets`"
