@@ -8,8 +8,8 @@
 #   HUBOT_GITHUB_TOKEN - GitHub API token. Required to perform authenticated actions.
 #   HUBOT_GITHUB_API - (optional) The base API URL. This is useful for Enterprise Github installations.
 #   HUBOT_GITHUB_USER - Default GitHub username to use if one is not given.
-#   HUBOT_GITHUB_DEPLOY_TARGETS - comma separated keys for your deployment environments.
 #   HUBOT_GITHUB_REPO - GitHub repository to use for deployments
+#   HUBOT_GITHUB_DEPLOY_TARGETS - comma separated keys for your deployment environments.
 #   HUBOT_GITHUB_DEPLOY_AUTO_MERGE - (optional) Instructs GitHub to attempt to automatically merge the default branch into the requested ref.
 #
 # Commands:
@@ -34,19 +34,19 @@ module.exports = (robot) ->
     deployTargets = []
 
   # Status
-  robot.respond /deploy status( [0-9]+)?(?: for ([\-A-z0-9]+)\/([\-A-z0-9]+))?$/i, (msg) ->
-    unless checkConfiguration(msg)
+  robot.respond /deploy status( [0-9]+)?(?: for ([\-A-z0-9]+)\/([\-A-z0-9]+))?$/i, (res) ->
+    unless checkConfiguration(res)
       return;
 
     app = process.env.HUBOT_GITHUB_REPO
-    status_id = msg.match[1]
+    status_id = res.match[1]
 
-    owner = msg.match[2]
-    repo = msg.match[3]
+    owner = res.match[2]
+    repo = res.match[3]
 
     if !owner? && !repo?
       if !app?
-        msg.send "Missing configuration: HUBOT_GITHUB_REPO"
+        res.send "Missing configuration: HUBOT_GITHUB_REPO"
         return false
     else
       app = "#{owner}/#{repo}"
@@ -55,58 +55,58 @@ module.exports = (robot) ->
       status_id = status_id.trim()
       github.deployments(app).status status_id, (statuses) ->
         if statuses.length is 0
-          msg.send "No status updates available."
+          res.send "No status updates available."
         else
           for status in statuses
             do (status) ->
-              msg.send "Status: #{status.description} (#{status.created_at}) / State: #{status.state}"
+              res.send "Status: #{status.description} (#{status.created_at}) / State: #{status.state}"
     else
       github.deployments app, (deployments) ->
 
         if deployments.length is 0
-          msg.send "No recent deployments."
+          res.send "No recent deployments."
         else
           for deployment in deployments
             do (deployment) ->
-              msg.send "Deployment #{deployment.id} (#{deployment.created_at}): User: #{deployment.creator.login} / Action: #{deployment.task} / Ref: #{deployment.ref} / Environment: #{deployment.environment} / Description: (#{deployment.description})"
+              res.send "Deployment #{deployment.id} (#{deployment.created_at}): User: #{deployment.creator.login} / Action: #{deployment.task} / Ref: #{deployment.ref} / Environment: #{deployment.environment} / Description: (#{deployment.description})"
 
 
   # List Deployment Targets
-  robot.respond /deploy list targets$/i, (msg) ->
-    unless checkConfiguration(msg)
+  robot.respond /deploy list targets$/i, (res) ->
+    unless checkConfiguration(res)
       return;
 
     if deployTargets.length is 0
-      msg.send "No deployment targets defined. Set HUBOT_GITHUB_DEPLOYMENT_TARGETS first."
+      res.send "No deployment targets defined. Set HUBOT_GITHUB_DEPLOYMENT_TARGETS first."
     else
-      msg.send "Available Deployment Targets"
-      msg.send "- #{target}" for target in deployTargets
+      res.send "Available Deployment Targets"
+      res.send "- #{target}" for target in deployTargets
 
   # List Available Branches
-  robot.respond /deploy list branches(?: for ([\-A-z0-9]+)\/([\-A-z0-9]+))?(.*)$/i, (msg) ->
-    unless checkConfiguration(msg)
+  robot.respond /deploy list branches(?: for ([\-A-z0-9]+)\/([\-A-z0-9]+))?(.*)$/i, (res) ->
+    unless checkConfiguration(res)
       return;
 
 
     app = process.env.HUBOT_GITHUB_REPO
-    owner = msg.match[1]
-    repo = msg.match[2]
+    owner = res.match[1]
+    repo = res.match[2]
 
     if !owner? && !repo?
       if !app?
-        msg.send "Missing configuration: HUBOT_GITHUB_REPO"
+        res.send "Missing configuration: HUBOT_GITHUB_REPO"
         return false
     else
       app = "#{owner}/#{repo}"
 
-    filter = msg.match[3].toLowerCase().trim()
+    filter = res.match[3].toLowerCase().trim()
 
     github.branches app, (branches) ->
 
       if branches.length is 0
-        msg.send "No branches in repository."
+        res.send "No branches in repository."
       else
-        msg.send "Available Deployment Branches"
+        res.send "Available Deployment Branches"
         branch_count = 0
         for branch in branches
           do (branch) ->
@@ -115,34 +115,34 @@ module.exports = (robot) ->
               branch_name = branch.name
               if ~branch_name.indexOf filter
                 branch_count++
-                msg.send "- #{branch.name}: #{branch.commit.sha}"
+                res.send "- #{branch.name}: #{branch.commit.sha}"
             # Unfiltered list
             else
               branch_count++
-              msg.send "- #{branch.name}: #{branch.commit.sha}"
+              res.send "- #{branch.name}: #{branch.commit.sha}"
         if filter && branch_count == 0
-          msg.send "- None matched search criteria."
+          res.send "- None matched search criteria."
 
   # Create Deployment
-  robot.respond /deploy ([-_\.0-9a-zA-Z\/]+)? to ([-_\.0-9a-zA-Z\/]+)(?: for ([\-A-z0-9]+)\/([\-A-z0-9]+))?$/i, (msg) ->
-    unless checkConfiguration(msg)
+  robot.respond /deploy ([-_\.0-9a-zA-Z\/]+)? to ([-_\.0-9a-zA-Z\/]+)(?: for ([\-A-z0-9]+)\/([\-A-z0-9]+))?$/i, (res) ->
+    unless checkConfiguration(res)
       return;
 
     app = process.env.HUBOT_GITHUB_REPO
     auto_merge = process.env.HUBOT_GITHUB_DEPLOY_AUTO_MERGE
-    ref = msg.match[1]
-    target = msg.match[2]
+    ref = res.match[1]
+    target = res.match[2]
 
     if target in deployTargets
-      username = msg.message.user.name.toLowerCase()
-      room = msg.message.user.room.toLowerCase()
+      username = res.message.user.name.toLowerCase()
+      room = res.message.user.room.toLowerCase()
 
-      owner = msg.match[3]
-      repo = msg.match[4]
+      owner = res.match[3]
+      repo = res.match[4]
 
       if !owner? && !repo?
         if !app?
-          msg.send "Missing configuration: HUBOT_GITHUB_REPO"
+          res.send "Missing configuration: HUBOT_GITHUB_REPO"
           return false
       else
         app = "#{owner}/#{repo}"
@@ -158,13 +158,13 @@ module.exports = (robot) ->
       data['auto_merge'] = auto_merge == 'true' if auto_merge
 
       github.deployments(app).create ref, data, (deployment) ->
-        msg.send deployment.description
+        res.send deployment.description
     else
-      msg.send "\"#{target}\" not in available deploy targets. Use `deploy list targets`"
+      res.send "\"#{target}\" not in available deploy targets. Use `deploy list targets`"
 
   # Help
-  robot.respond /deploy$/i, (msg) ->
-    unless checkConfiguration(msg)
+  robot.respond /deploy$/i, (res) ->
+    unless checkConfiguration(res)
       return;
 
     cmds = robot.helpCommands()
@@ -173,18 +173,18 @@ module.exports = (robot) ->
     emit = cmds.join "\n"
     unless robot.name.toLowerCase() is 'hubot'
       emit = emit.replace /hubot/ig, robot.name
-    msg.send emit
+    res.send emit
 
   # Check Config
-  checkConfiguration = (msg) ->
+  checkConfiguration = (res) ->
     unless process.env.HUBOT_GITHUB_TOKEN
-      msg.send "Missing configuration: HUBOT_GITHUB_TOKEN"
+      res.send "Missing configuration: HUBOT_GITHUB_TOKEN"
       return false
     unless process.env.HUBOT_GITHUB_USER
-      msg.send "Missing configuration: HUBOT_GITHUB_USER"
+      res.send "Missing configuration: HUBOT_GITHUB_USER"
       return false
     unless process.env.HUBOT_GITHUB_DEPLOY_TARGETS
-      msg.send "Missing configuration: HUBOT_GITHUB_DEPLOY_TARGETS"
+      res.send "Missing configuration: HUBOT_GITHUB_DEPLOY_TARGETS"
       return false
 
     return true;
