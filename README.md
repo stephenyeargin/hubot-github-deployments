@@ -27,6 +27,7 @@ Then add **hubot-github-deployments** to your `external-scripts.json`:
 | `HUBOT_GITHUB_TOKEN`          | Yes       | GitHub application token         |
 | `HUBOT_GITHUB_USER`           | Yes       | GitHub bot user for deployments (IRC user will be noted in deployment description) |
 | `HUBOT_GITHUB_DEPLOY_TARGETS` | Yes       | Comma-separated list of environments, e.g. `production,staging` |
+| `HUBOT_GITHUB_DEPLOY_AUTO_MERGE` | No       | Passes auto_merge parameter to the deployment `true/false` |
 | `HUBOT_GITHUB_REPO`           | No        | Repository to deploy, in `:owner/:repository format` |
 
 ## Commands:
