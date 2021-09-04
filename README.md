@@ -1,6 +1,6 @@
 # Hubot GitHub Deployments
 
-[![npm version](https://badge.fury.io/js/hubot-github-deployments.svg)](http://badge.fury.io/js/hubot-github-deployments) [![Build Status](https://travis-ci.org/stephenyeargin/hubot-github-deployments.png)](https://travis-ci.org/stephenyeargin/hubot-github-deployments)
+[![npm version](https://badge.fury.io/js/hubot-github-deployments.svg)](http://badge.fury.io/js/hubot-github-deployments) [![Build Status](https://app.travis-ci.com/stephenyeargin/hubot-github-deployments.png)](https://app.travis-ci.com/stephenyeargin/hubot-github-deployments)
 
 Integrate with GitHub deployment API.
 
