@@ -152,7 +152,8 @@ module.exports = (robot) ->
         ref: ref,
         task: 'deploy',
         environment: target,
-        payload: {user: username, room: room}
+        payload: {user: username, room: room},
+        required_contexts: [],
         description: "#{username} created deployment for #{app}@#{ref} to #{target}"
       }
 
