@@ -11,7 +11,7 @@
 #   HUBOT_GITHUB_REPO - GitHub repository to use for deployments
 #   HUBOT_GITHUB_DEPLOY_TARGETS - comma separated keys for your deployment environments.
 #   HUBOT_GITHUB_DEPLOY_AUTO_MERGE - (optional) Instructs GitHub to attempt to automatically merge the default branch into the requested ref.
-#
+#   HUBOT_GITHUB_DEPLOY_REQUIRED_CONTEXTS - (optional) Instructs GitHub to attempt to perform a status check. Pass empty array to skip it.
 # Commands:
 #   hubot deploy status [for :owner/:repo] - List the status of most recent deployments
 #   hubot deploy status [id] [for :owner/:repo]  - List the statuses a particular deployment, or an optional specific status
@@ -130,6 +130,7 @@ module.exports = (robot) ->
 
     app = process.env.HUBOT_GITHUB_REPO
     auto_merge = process.env.HUBOT_GITHUB_DEPLOY_AUTO_MERGE
+    required_contexts = process.env.HUBOT_GITHUB_DEPLOY_REQUIRED_CONTEXTS
     ref = res.match[1]
     target = res.match[2]
 
@@ -151,11 +152,13 @@ module.exports = (robot) ->
         ref: ref,
         task: 'deploy',
         environment: target,
-        payload: {user: username, room: room}
+        payload: {user: username, room: room},
         description: "#{username} created deployment for #{app}@#{ref} to #{target}"
       }
 
       data['auto_merge'] = auto_merge == 'true' if auto_merge
+
+      data['required_contexts'] = required_contexts if required_contexts
 
       github.deployments(app).create ref, data, (deployment) ->
         res.send deployment.description
