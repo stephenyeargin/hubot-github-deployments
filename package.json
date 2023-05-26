@@ -20,7 +20,7 @@
     "url": "https://github.com/stephenyeargin/hubot-github-deployments/issues"
   },
   "peerDependencies": {
-    "hubot": "^3"
+    "hubot": "^3 || ^4"
   },
   "dependencies": {
     "githubot": "1.0.1"
