@@ -166,7 +166,8 @@ module.exports = (robot) ->
     repo = match2
 
     if !owner? && !repo?
-      app = ""
+      if !app?
+        app = ""
     else
       app = "#{owner}/#{repo}"
     return app
