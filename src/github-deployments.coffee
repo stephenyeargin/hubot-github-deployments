@@ -165,11 +165,10 @@ module.exports = (robot) ->
       owner = match1
     repo = match2
 
-    if !owner? && !repo? && !app?
-      if !app?
-        app = ""
-      else
-        app = "#{owner}/#{repo}"
+    if !owner? && !repo?
+      app = ""
+    else
+      app = "#{owner}/#{repo}"
     return app
 
   # Check Config
