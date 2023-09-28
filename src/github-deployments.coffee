@@ -40,6 +40,9 @@ module.exports = (robot) ->
 
     status_id = res.match[1]
     app = getRepoInfo(res.match[2], res.match[3]) 
+    if !app?
+      res.send "Missing configuration: HUBOT_GITHUB_REPO"
+      return false
 
     if status_id?
       status_id = status_id.trim()
@@ -78,6 +81,9 @@ module.exports = (robot) ->
       return;
 
     app = getRepoInfo(res.match[1], res.match[2])
+    if !app?
+      res.send "Missing configuration: HUBOT_GITHUB_REPO"
+      return false
 
     filter = res.match[3].toLowerCase().trim()
 
@@ -109,6 +115,9 @@ module.exports = (robot) ->
       return;
 
     app = getRepoInfo(res.match[3], match[4])
+    if !app?
+      res.send "Missing configuration: HUBOT_GITHUB_REPO"
+      return false
     auto_merge = process.env.HUBOT_GITHUB_DEPLOY_AUTO_MERGE
     required_contexts = process.env.HUBOT_GITHUB_DEPLOY_REQUIRED_CONTEXTS
     ref = res.match[1]
@@ -156,12 +165,11 @@ module.exports = (robot) ->
       owner = match1
     repo = match2
 
-    if !owner? && !repo?
+    if !owner? && !repo? && !app?
       if !app?
-        res.send "Missing configuration: HUBOT_GITHUB_REPO"
-        return false
-    else
-      app = "#{owner}/#{repo}"
+        app = ""
+      else
+        app = "#{owner}/#{repo}"
     return app
 
   # Check Config
