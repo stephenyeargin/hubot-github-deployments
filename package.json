@@ -20,20 +20,20 @@
     "url": "https://github.com/stephenyeargin/hubot-github-deployments/issues"
   },
   "peerDependencies": {
-    "hubot": "^3 || ^4"
+    "hubot": ">=2 <10 || 0.0.0-development"
   },
   "dependencies": {
     "githubot": "1.0.1"
   },
   "devDependencies": {
-    "chai": "^4.3.7",
+    "chai": "^4.3.10",
     "coffee-script": "^1.12.7",
     "hubot-test-helper": "^1.9.0",
     "husky": "^8.0.3",
     "mocha": "^10.2.0",
-    "nock": "^13.3.2",
-    "release-it": "^16.1.3",
-    "sinon": "^15.2.0",
+    "nock": "^13.3.3",
+    "release-it": "^16.2.1",
+    "sinon": "^16.0.0",
     "sinon-chai": "^3.7.0"
   },
   "main": "index.coffee",
