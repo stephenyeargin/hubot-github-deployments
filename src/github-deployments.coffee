@@ -114,7 +114,7 @@ module.exports = (robot) ->
     unless checkConfiguration(res)
       return;
 
-    app = getRepoInfo(res.match[3], match[4])
+    app = getRepoInfo(res.match[3], res.match[4])
     if !app?
       res.send "Missing configuration: HUBOT_GITHUB_REPO"
       return false
