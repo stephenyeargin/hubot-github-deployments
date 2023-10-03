@@ -38,18 +38,11 @@ module.exports = (robot) ->
     unless checkConfiguration(res)
       return;
 
-    app = process.env.HUBOT_GITHUB_REPO
     status_id = res.match[1]
-
-    owner = res.match[2]
-    repo = res.match[3]
-
-    if !owner? && !repo?
-      if !app?
-        res.send "Missing configuration: HUBOT_GITHUB_REPO"
-        return false
-    else
-      app = "#{owner}/#{repo}"
+    app = getRepoInfo(res.match[2], res.match[3]) 
+    if !app?
+      res.send "Missing configuration: HUBOT_GITHUB_REPO"
+      return false
 
     if status_id?
       status_id = status_id.trim()
@@ -87,17 +80,10 @@ module.exports = (robot) ->
     unless checkConfiguration(res)
       return;
 
-
-    app = process.env.HUBOT_GITHUB_REPO
-    owner = res.match[1]
-    repo = res.match[2]
-
-    if !owner? && !repo?
-      if !app?
-        res.send "Missing configuration: HUBOT_GITHUB_REPO"
-        return false
-    else
-      app = "#{owner}/#{repo}"
+    app = getRepoInfo(res.match[1], res.match[2])
+    if !app?
+      res.send "Missing configuration: HUBOT_GITHUB_REPO"
+      return false
 
     filter = res.match[3].toLowerCase().trim()
 
@@ -128,7 +114,10 @@ module.exports = (robot) ->
     unless checkConfiguration(res)
       return;
 
-    app = process.env.HUBOT_GITHUB_REPO
+    app = getRepoInfo(res.match[3], res.match[4])
+    if !app?
+      res.send "Missing configuration: HUBOT_GITHUB_REPO"
+      return false
     auto_merge = process.env.HUBOT_GITHUB_DEPLOY_AUTO_MERGE
     required_contexts = process.env.HUBOT_GITHUB_DEPLOY_REQUIRED_CONTEXTS
     ref = res.match[1]
@@ -137,16 +126,6 @@ module.exports = (robot) ->
     if target in deployTargets
       username = res.message.user.name.toLowerCase()
       room = res.message.user.room.toLowerCase()
-
-      owner = res.match[3]
-      repo = res.match[4]
-
-      if !owner? && !repo?
-        if !app?
-          res.send "Missing configuration: HUBOT_GITHUB_REPO"
-          return false
-      else
-        app = "#{owner}/#{repo}"
 
       data = {
         ref: ref,
@@ -177,6 +156,21 @@ module.exports = (robot) ->
     unless robot.name.toLowerCase() is 'hubot'
       emit = emit.replace /hubot/ig, robot.name
     res.send emit
+
+  # Get repo settings
+  getRepoInfo = (match1, match2) ->
+    app = process.env.HUBOT_GITHUB_REPO
+    owner = process.env.HUBOT_GITHUB_OWNER
+    if !owner?
+      owner = match1
+    repo = match2
+
+    if !owner? && !repo?
+      if !app?
+        app = ""
+    else
+      app = "#{owner}/#{repo}"
+    return app
 
   # Check Config
   checkConfiguration = (res) ->
