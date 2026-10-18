@@ -33,9 +33,12 @@
     "eslint-plugin-promise": "^6.1.1",
     "hubot": "^14",
     "husky": "^9.1.7",
-    "nock": "^14.0.17"
+    "nock": "^15.0.1"
   },
   "main": "index.js",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "lint": "eslint src test",
     "lint:fix": "eslint --fix src test",
